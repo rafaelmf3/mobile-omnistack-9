@@ -7,7 +7,7 @@ import logo from '../assets/logo.png';
 
 export default function Login({navigation}) {
   const [email, setEmail] = useState('');
-  const [techs, setTechs] = useState([]);
+  const [techs, setTechs] = useState('');
   
   useEffect(() => {
     AsyncStorage.getItem('user').then(user => {
@@ -18,7 +18,7 @@ export default function Login({navigation}) {
   }, []);
 
   async function handleSubmit() {
-    const response = api.post('/sessions', {
+    const response = await api.post('/sessions', {
       email
     })
 
@@ -53,7 +53,6 @@ export default function Login({navigation}) {
           style={styles.input}
           placeholder="Tecnologias de interesse"
           placeholderTextColor="#999"
-          keyboardType="email-address"
           autoCapitalize="words"
           autoCorrect={false}
           value={techs}
