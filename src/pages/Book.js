@@ -3,7 +3,7 @@ import { View } from 'react-native';
 
 // import { Container } from './styles';
 
-export default function pages() {
+export default function Book() {
   return (
     <View />
   );

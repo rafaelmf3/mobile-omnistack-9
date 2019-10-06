@@ -1,9 +1,36 @@
-import React from 'react';
-import { View, KeyboardAvoidingView, Platform, Image, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, KeyboardAvoidingView, Platform, Image, StyleSheet, Text, TextInput, TouchableOpacity, AsyncStorage } from 'react-native';
+
+import api from '../services/api';
 
 import logo from '../assets/logo.png';
 
-export default function pages() {
+export default function Login({navigation}) {
+  const [email, setEmail] = useState('');
+  const [techs, setTechs] = useState([]);
+  
+  useEffect(() => {
+    AsyncStorage.getItem('user').then(user => {
+      if (user) {
+        navigation.navigate('List');
+      }
+    })
+  }, []);
+
+  async function handleSubmit() {
+    const response = api.post('/sessions', {
+      email
+    })
+
+    const { _id } = response.data;
+
+    await AsyncStorage.setItem('user', _id);
+    await AsyncStorage.setItem('techs', techs);
+
+    navigation.navigate('List');
+
+  }
+
   return (
     <KeyboardAvoidingView enabled={Platform.OS === 'ios'} behavior="padding" style={styles.container}>
       <Image source={logo} />
@@ -16,7 +43,9 @@ export default function pages() {
           placeholderTextColor="#999"
           keyboardType="email-address"
           autoCapitalize="none"
-          autoCorrect="none"
+          autoCorrect={false}
+          value={email}
+          onChangeText={setEmail}
         />
 
         <Text style={styles.label}>TECNOLOGIAS *</Text>
@@ -27,9 +56,11 @@ export default function pages() {
           keyboardType="email-address"
           autoCapitalize="words"
           autoCorrect={false}
+          value={techs}
+          onChangeText={setTechs}
         />  
 
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity onPress={handleSubmit} style={styles.button}>
           <Text style={styles.buttonText}>Encontrar spots</Text>
         </TouchableOpacity>
       </View>
